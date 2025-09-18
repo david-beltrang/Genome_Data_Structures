@@ -1,7 +1,8 @@
 #include "comando_functions.h"
 #include <iostream>
+#include <regex>
 
-// Esta funcion muestra los comandos diponibles que puede utilizar el usuario
+// Implementación de funciones auxiliares
 void mostrarAyudaGeneral() {
     cout << "Comandos disponibles:\n";
     cout << " - cargar nombre_archivo\n";
@@ -18,11 +19,10 @@ void mostrarAyudaGeneral() {
     cout << " - salir\n";
 }
 
-// Esta funcion muestra la ayuda especifica de un comando
-void mostrarAyudaEspecifica(const string& comando) {
+void mostrarAyudaEspecifica(string& comando) {
     if (comando == "cargar") {
         cout << "Uso: cargar nombre_archivo\n"
-             <<" Funcion: Se carga la informacion de los genomas que estan guardados en el archivo nombre_archivo. Cada vez que se use este comando todo lo anterior guardado por el mismo se borra y se carga la nueva informacion.\n";
+             << " Funcion: Se carga la informacion de los genomas que estan guardados en el archivo nombre_archivo. Cada vez que se use este comando todo lo anterior guardado por el mismo se borra y se carga la nueva informacion.\n";
     } else if (comando == "listar_secuencias") {
         cout << "Uso: listar_secuencias\n"
              << "Funcion: Imprime la cantidad de secuencias que se encuentran cargadas en el sistema y despues imprime la informacion basica de cada secuencia separado por saltos de linea. Si nota algun elemento incompleto en la secuencia lo tomara como - y al imprimirlo dira que la secuencia tiene al menos b bases, si esta completa la secuencia contiene b bases.\n";
@@ -50,37 +50,28 @@ void mostrarAyudaEspecifica(const string& comando) {
     } else if (comando == "base_remota") {
         cout << "Uso: base_remota descripcion_secuencia i j\n"
              << "Funcion: Encuentra la base mas lejana (en distancia dentro del grafo) que sea igual a la base ubicada en la posicion [i,j] y muestra la ruta para llegar hasta ella junto con el costo total.\n";
-    } else {        cout << "[ERROR] No hay ayuda disponible para el comando: " << comando << "\n";
+    } else {
+        cout << "[ERROR] No hay ayuda disponible para el comando: " << comando << "\n";
     }
 }
 
-// Esta funcion según el comando que recibe, devuelve un entero que representa ese comando para usarlo en el switch
-int comandoAEntero(const string& comando) {
-    if (comando == "salir")
-	    return 1;
-    else if (comando == "ayuda")
-	    return 2;
-    else if (comando == "cargar")
-	    return 3;
-    else if (comando == "listar_secuencias")
-	    return 4;
-    else if (comando == "histograma")
-	    return 5;
-    else if (comando == "es_subsecuencia")
-	    return 6;
-    else if (comando == "enmascarar")
-	    return 7;
-    else if (comando == "guardar")
-	    return 8;
-    else if (comando == "codificar")
-	    return 9;
-    else if (comando == "decodificar") 
-	    return 10;
-    else if (comando == "ruta_mas_corta") 
-	    return 11;
-    else if (comando == "base_remota")
-	    return 12;
-    else 
-	    return 0;
+int comandoAEntero(string& comando) {
+    if (comando == "salir") return 1;
+    else if (comando == "ayuda") return 2;
+    else if (comando == "cargar") return 3;
+    else if (comando == "listar_secuencias") return 4;
+    else if (comando == "histograma") return 5;
+    else if (comando == "es_subsecuencia") return 6;
+    else if (comando == "enmascarar") return 7;
+    else if (comando == "guardar") return 8;
+    else if (comando == "codificar") return 9;
+    else if (comando == "decodificar") return 10;
+    else if (comando == "ruta_mas_corta") return 11;
+    else if (comando == "base_remota") return 12;
+    else return 0;
 }
 
+bool esBaseValida(string& base) {
+    static regex regex("^[ACGTURYKMSWBDHVNX-]+$");
+    return regex_match(base, regex);
+}
