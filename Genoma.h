@@ -4,13 +4,11 @@
 #include <vector>
 #include "Secuencia.h"
 
-using namespace std;
-
 // TAD Genoma
 class Genoma {
 private:
     vector<Secuencia> secuencias;       // Vector de secuencias
-    Secuencia buscarSecuencia(const string& desc);
+    const Secuencia& buscarSecuencia(const string& desc);
 public:
     // Prototipos de métodos
     void cargarDesdeArchivo(const string& nombreArchivo);

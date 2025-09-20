@@ -2,8 +2,6 @@
 #define __COMANDO_FUNCTIONS__H__
 #include <string>
 
-using namespace std;
-
 // Prototipos de funciones auxiliares
 void mostrarAyudaGeneral();
 void mostrarAyudaEspecifica(const string& comando);
