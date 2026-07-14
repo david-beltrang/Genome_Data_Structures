@@ -174,8 +174,10 @@ Genome_Data_Structures/
 ├── comando_functions.cxx     # Implementación: mostrarAyuda*(), comandoAEntero(), esBaseValida()
 ├── test_comando.cxx          # Programa principal: REPL que parsea comandos y ejecuta Genoma
 ├── examples/
-│   ├── genoma_pequeno.fa     # Ejemplo: 3 secuencias cortas de ADN (solo A,C,G,T)
-│   └── genoma_con_gaps.fa    # Ejemplo: secuencia con gaps (-) para probar secuenciaCompleta()
+│   ├── dnaExample.fa             # 1 secuencia larga (Keratin, solo A,C,G,T)
+│   ├── manySequences.fa          # 8 secuencias mezcladas (ADN, ARN, aminoacidos, gaps)
+│   ├── multiSequence.fa          # 3 secuencias (aminoacidos/proteinas)
+│   └── multisizeSequences.fa     # 11 secuencias de ADN mitocondrial (COI, solo A,C,G,T)
 ├── docs/
 │   └── documentacion_tecnica.pdf  # Documento de entrega académica
 └── README.md                 # Este archivo
@@ -195,61 +197,44 @@ interactiva.
 
 ## Ejemplo de uso
 
-Compilar y ejecutar el REPL:
+<!-- TODO: ejecutar el programa y reemplazar los marcadores con output real.
+Los comandos a probar son:
 
-```
-g++ -o genoma.exe test_comando.cxx Genoma.cxx Secuencia.cxx comando_functions.cxx ArbolHuffman.cxx NodoHuffman.cxx GrafoBase.cxx NodoGrafo.cxx
-./genoma.exe
-```
+    Compilar:
+    g++ -o genoma.exe test_comando.cxx Genoma.cxx Secuencia.cxx comando_functions.cxx ArbolHuffman.cxx NodoHuffman.cxx GrafoBase.cxx NodoGrafo.cxx
 
-Cargar el archivo de ejemplo y listar las secuencias:
+    1. Carga del archivo ejemplo y listado:
+       ./genoma.exe
+       $ cargar examples/multisizeSequences.fa
+       $ listar_secuencias
+       $ histograma Seq1_Carpodacus_mexicanus
 
-```
-$ cargar examples/genoma_pequeno.fa
-3 secuencias cargadas correctamente desde examples/genoma_pequeno.fa.
-```
+    2. Busqueda de subsecuencia:
+       $ es_subsecuencia ATG
 
-Listar las secuencias cargadas:
+    3. Carga de archivo con gaps y deteccion de incompletitud:
+       $ cargar examples/manySequences.fa
+       $ listar_secuencias
+       (las secuencias con '-' deben mostrar "contiene al menos ... bases")
 
-```
-$ listar_secuencias
-Hay 3 secuencias cargadas en memoria:
-Secuencia COX1_Fragment_Canis_lupus contiene 236 bases.
-Secuencia rRNA_16S_Escherichia_coli contiene 249 bases.
-Secuencia ATP6_Fragment_Homo_sapiens contiene 200 bases.
-```
+    4. Codificacion Huffman:
+       $ cargar examples/dnaExample.fa
+       $ codificar ejemplo.fabin
+       $ decodificar ejemplo.fabin
+       $ listar_secuencias    (verificar que las bases coinciden tras ciclo codificar/decodificar)
 
-Generar histograma de una secuencia:
+    5. Ruta mas corta en grafo:
+       $ cargar examples/multisizeSequences.fa
+       $ ruta_mas_corta Seq1_Carpodacus_mexicanus 0 0 3 5
 
-```
-$ histograma COX1_Fragment_Canis_lupus
-A : 64
-C : 54
-G : 56
-T : 62
-```
+    6. Base remota:
+       $ base_remota Seq1_Carpodacus_mexicanus 0 0
 
-Buscar una subsecuencia:
-
-```
-$ es_subsecuencia ATG
-La subsecuencia dada se repite 5 veces dentro de las secuencias cargadas en memoria.
-```
-
-Cargar una secuencia con gaps y verificar detección de incompletitud:
-
-```
-$ cargar examples/genoma_con_gaps.fa
-1 secuencias cargada correctamente desde examples/genoma_con_gaps.fa.
-$ listar_secuencias
-Hay 1 secuencias cargadas en memoria:
-Secuencia COX1_incompleta_Gallus_gallus contiene al menos 154 bases.
-```
-
-Nota: el output arriba se obtuvo mediante analisis estatico del codigo
-(no se encontro un compilador de C++ disponible en esta maquina para
-ejecutar el binario). El usuario debera compilar y ejecutar para
-verificar el output real.
+    Nota: muchosSequences.fa contiene caracteres no-ADN (aminoacidos, *)
+    que seran rechazados por esBaseValida(). Las secuencias validas en ese
+    archivo son las cabeceras NZ_*, NC_* (ADN/ARN con gaps) y posiblemente
+    la ultima (gi|5524211|gb|AAD44166.1, con X al final).
+-->
 
 ## Autor
 
