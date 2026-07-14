@@ -1,40 +1,47 @@
 #include "Secuencia.h"
 #include <string>
 
-using namespace std;
+// Implementación del TAD Secuencia
 
-// Constructor por defecto,inicializa anchoLinea en 0
+// Constructor por defecto: inicializa anchoLinea en 0
 Secuencia::Secuencia() : anchoLinea(0) {}
 
 // Constructor que recibe una descripción
 Secuencia::Secuencia(string desc) {
-    descripcion = desc;  
+    descripcion = desc;  // guarda la descripción recibida
     bases = "";         // inicializa la cadena de bases vacía
-    anchoLinea = 0;     // ancho de línea inicializado en 0
+    anchoLinea = 0;     // ancho de línea inicial en 0
 }
 
-// Setter para la descripción
+// Constructor con 3 paramteros
+Secuencia::Secuencia(const string& desc, const string& bases, unsigned short ancho) {
+    this->descripcion = desc;
+    this->bases = bases;
+    this->anchoLinea = ancho; 
+}
+
+// Setter para la descripción, recibe la descripción por referencia no constante
 void Secuencia::setDescripcion(string& desc) {
     descripcion = desc; // asigna la descripción
 }
 
 // Getter para obtener la descripción actual
-string Secuencia::getDescripcion() {
+string Secuencia::getDescripcion() const{
     return descripcion;
 }
 
 // Getter para obtener la cadena de bases
-string Secuencia::getBases() {
+string Secuencia::getBases() const{
     return bases;
 }
 
 // Getter para obtener el ancho de línea actual
-int Secuencia::getAnchoLinea() {
+int Secuencia::getAnchoLinea() const{
     return anchoLinea;
 }
 
 // Agrega una línea de bases a la secuencia
-void Secuencia::agregarLinea(string& linea) {
+void Secuencia::agregarLinea(const string& linea) {
     // Si el anchoLinea es 0 (primera línea), se asigna el largo de la línea actual
     if (anchoLinea == 0) {
         anchoLinea = linea.length();
@@ -47,18 +54,14 @@ void Secuencia::agregarLinea(string& linea) {
 bool Secuencia::secuenciaCompleta() {
     // Recorre cada base en la cadena bases
     for (char base : bases) {
-        if (base == '-')  // Si encuentra un guion, no está completa
+        if (base == '-')  // si encuentra un guion, no está completa
             return false;
     }
-    return true; // Si no hay guiones, la secuencia está completa
+    return true; // si no encontró guiones, la secuencia está completa
 }
 
 // Cuenta las bases que aparecen en la cadena bases pasada por parámetro y guarda el conteo en el arreglo conteoBase de tamaño 256 para índice ASCII
 int Secuencia::contarBases(const string& bases, int (&conteoBase)[256]) {
-    // Inicializa el conteo en 0 para todos los caracteres
-    for (int i = 0; i < 256; i++) 
-        conteoBase[i] = 0;
-
     // Recorre cada base en la cadena bases
     for(char base : bases){
         // Incrementa el contador correspondiente según el carácter base
@@ -93,20 +96,20 @@ int Secuencia::contarBases(const string& bases, int (&conteoBase)[256]) {
 
 // Cuenta cuántas veces aparece la subsecuencia 'sub' dentro de la secuencia actual (bases)
 int Secuencia::contarSubsecuencia(const string& sub) const {
-    int conteo = 0;
-    size_t pos = 0;
-    // Busca la subsecuencia 'sub' dentro de las bases
+    int conteo = 0;      // contador de ocurrencias
+    size_t pos = 0;      // posición inicial de búsqueda
+    // Busca la subsecuencia 'sub' mientras se encuentre dentro de bases
     while ((pos = bases.find(sub, pos)) != string::npos) {
         conteo++;
-        pos += 1;
+        pos += 1;       // avanza la posición para buscar la siguiente aparición
     }
-    return conteo; // Retorna total de ocurrencias encontradas
+    return conteo;       // retorna total de ocurrencias encontradas
 }
 
 // Reemplaza la subsecuencia 'sub' que empieza en la posición 'pos' con 'X's
 void Secuencia::reemplazarSubsecuencia(const string& sub, int pos) {
     // Itera desde la posición inicial hasta la longitud de la subsecuencia
     for (size_t i = pos; i < pos + sub.length(); ++i) {
-        bases[i] = 'X';  // Reemplaza cada base por 'X'
+        bases[i] = 'X';  // reemplaza cada base por 'X'
     }
 }
