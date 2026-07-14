@@ -236,7 +236,10 @@ Los comandos a probar son:
     la ultima (gi|5524211|gb|AAD44166.1, con X al final).
 -->
 
-## Autor
+## Autores
 
-David Beltran Gomez — Pontificia Universidad Javeriana, Estructuras de
-Datos, 2026-1.
+- Ana Maria Romero Cuadrado
+- Juan Felipe Gómez López
+- David Beltrán Gómez
+
+Pontificia Universidad Javeriana — Estructuras de Datos, 2025-2.
