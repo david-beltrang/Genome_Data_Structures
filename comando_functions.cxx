@@ -2,8 +2,6 @@
 #include <iostream>
 #include <regex>
 
-using namespace std;
-
 // Implementación de funciones auxiliares
 void mostrarAyudaGeneral() {
     cout << "Comandos disponibles:\n";
@@ -22,7 +20,7 @@ void mostrarAyudaGeneral() {
 }
 
 // Muestra ayuda específica para un comando dado
-void mostrarAyudaEspecifica(const string& comando) {
+void mostrarAyudaEspecifica(string& comando) {
     if (comando == "cargar") {
         cout << "Uso: cargar nombre_archivo\n"
              << " Funcion: Se carga la informacion de los genomas que estan guardados en el archivo nombre_archivo. Cada vez que se use este comando todo lo anterior guardado por el mismo se borra y se carga la nueva informacion.\n";
@@ -59,7 +57,7 @@ void mostrarAyudaEspecifica(const string& comando) {
 }
 
 // Convierte un comando a un entero para su procesamiento
-int comandoAEntero(const string& comando) {
+int comandoAEntero(string& comando) {
     if (comando == "salir") return 1;
     else if (comando == "ayuda") return 2;
     else if (comando == "cargar") return 3;
@@ -77,6 +75,18 @@ int comandoAEntero(const string& comando) {
 
 // Verifica si una base es válida (A, C, G, T, U, R, Y, K, M, S, W, B, D, H, V, N, X, -)
 bool esBaseValida(const string& base) {
-    static regex regex("^[ACGTURYKMSWBDHVNX-]+$");
-    return regex_match(base, regex);
+    for (char c : base) {
+        switch (c) {
+            case 'A': case 'C': case 'G': case 'T':
+            case 'U': case 'R': case 'Y': case 'K':
+            case 'M': case 'S': case 'W': case 'B':
+            case 'D': case 'H': case 'V': case 'N':
+            case 'X': case '-': case '\n': case ' ':
+                continue;
+            default:
+                return false;
+        }
+    }
+    return true;
 }
+
