@@ -121,10 +121,10 @@ int main() {
             case 9: { // codificar
                 string archivo, extra;
                 if (iss >> archivo) {
-                    if (iss >> extra) {
+                    if (iss >> extra)
                         cout << "[ERROR] Ha digitado palabras demas despues del archivo.\n";
-                    } else {
-                        // TODO: Codificar archivo
+                    else{
+                        genoma.codificar(archivo);
                     }
                 } else {
                     cout << "[ERROR] Uso: codificar nombre_archivo.fabin\n";
@@ -138,7 +138,7 @@ int main() {
                     if (iss >> extra) {
                         cout << "[ERROR] Ha digitado palabras demas despues del archivo.\n";
                     } else {
-                        // TODO: Decodificar archivo
+                        genoma.decodificar(archivo);
                     }
                 } else {
                     cout << "[ERROR] Uso: decodificar nombre_archivo.fabin\n";
@@ -150,10 +150,10 @@ int main() {
                 string descripcion, extra;
                 int i, j, x, y;
                 if (iss >> descripcion >> i >> j >> x >> y) {
-                    if (iss >> extra) {
+                    if (iss >> extra){
                         cout << "[ERROR] Ha digitado argumentos demas, solo se permite: descripcion_secuencia i j x y.\n";
                     } else {
-                        // TODO: Ruta mas corta
+                        genoma.ruta_mas_corta(descripcion, i, j, x, y);
                     }
                 } else {
                     cout << "[ERROR] Uso: ruta_mas_corta descripcion_secuencia i j x y\n";
@@ -165,10 +165,10 @@ int main() {
                 string descripcion, extra;
                 int i, j;
                 if (iss >> descripcion >> i >> j) {
-                    if (iss >> extra) {
+                    if (iss >> extra){
                         cout << "[ERROR] Ha digitado argumentos demas, solo se permite: descripcion_secuencia i j.\n";
                     } else {
-                        // TODO: Base remota
+                        genoma.base_remota(descripcion, i, j);
                     }
                 } else {
                     cout << "[ERROR] Uso: base_remota descripcion_secuencia i j\n";
@@ -183,4 +183,4 @@ int main() {
     return 0;
 }
 
-// eof - test_comando.cxx
+// eof - test_comando.h
