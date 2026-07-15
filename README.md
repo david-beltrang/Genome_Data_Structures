@@ -111,6 +111,11 @@ El empaquetado de bits se realiza en `escribirBitsEmpaquetados()`
 cada 8 bits. El desempacado en `leerBitsDesempaquetados()`
 (`Genoma.cxx:468–489`): lee bytes y los convierte a string de `'0'`/`'1'`.
 
+Se verifico manualmente un ciclo completo codificar→decodificar sobre
+`examples/dnaExample.fa` (5339 bases, solo A/C/G/T): el archivo
+`.fabin` se genero sin errores y la recarga produjo exactamente la
+misma secuencia de 5339 bases.
+
 ## Análisis de grafos
 
 **Representación** — `GrafoBase` (`GrafoBase.h:19`)
@@ -126,6 +131,13 @@ secuencia, la base es `'\0'` (nula).
 ```
 peso(a, b) = 1.0 / (1.0 + abs(valorASCII(a) - valorASCII(b)))
 ```
+
+El peso disminuye a medida que la diferencia ASCII aumenta: dos bases
+identicas tienen peso 1.0 (maximo), mientras que bases muy distintas
+(A, valorASCII 65, vs T, valorASCII 84) tienen un peso de aprox. 0.05.
+Dijkstra minimiza la suma de pesos, por lo que favorece rutas que
+atraviesan bases con valores ASCII cercanos, no similares en sentido
+biologico.
 
 Aristas solo entre vecinos ortogonales (arriba, abajo, izquierda,
 derecha). No se consideran diagonales. Celdas con base `'\0'` no
@@ -197,44 +209,77 @@ interactiva.
 
 ## Ejemplo de uso
 
-<!-- TODO: ejecutar el programa y reemplazar los marcadores con output real.
-Los comandos a probar son:
+Compilar y ejecutar el REPL:
 
-    Compilar:
-    g++ -o genoma.exe test_comando.cxx Genoma.cxx Secuencia.cxx comando_functions.cxx ArbolHuffman.cxx NodoHuffman.cxx GrafoBase.cxx NodoGrafo.cxx
+```
+g++ -o genoma.exe test_comando.cxx Genoma.cxx Secuencia.cxx comando_functions.cxx ArbolHuffman.cxx NodoHuffman.cxx GrafoBase.cxx NodoGrafo.cxx
+./genoma.exe
+```
 
-    1. Carga del archivo ejemplo y listado:
-       ./genoma.exe
-       $ cargar examples/multisizeSequences.fa
-       $ listar_secuencias
-       $ histograma Seq1_Carpodacus_mexicanus
+Cargar un archivo de ejemplo y listar las secuencias:
 
-    2. Busqueda de subsecuencia:
-       $ es_subsecuencia ATG
+```
+$ cargar examples/multisizeSequences.fa
+11 secuencias cargadas correctamente desde examples/multisizeSequences.fa.
+$ listar_secuencias
+Hay 11 secuencias cargadas en memoria:
+Secuencia Seq1_Carpodacus_mexicanus contiene 695 bases.
+Secuencia Seq2_uncultured_bacillus_sp. contiene 661 bases.
+Secuencia Seq3_Phalaenopsis_equestris_var.leucaspis contiene 694 bases.
+Secuencia Seq4_uncultured_archaeon contiene 674 bases.
+Secuencia Seq5_InfluenzaAvirus contiene 694 bases.
+Secuencia Seq6_Vireo_gilvus contiene 674 bases.
+Secuencia Seq7_Pelecanus_erythrorhynchos contiene 662 bases.
+Secuencia Seq8_Hippodamia_tredecimpunctata_tibialis contiene 652 bases.
+Secuencia Seq9_Petunia_integrifolia_subsp.inflata contiene 592 bases.
+Secuencia Seq10_Fusarium_oxysporum_f.tuberosi contiene 592 bases.
+Secuencia Seq11_Dendroica_tigrina contiene 490 bases.
+```
 
-    3. Carga de archivo con gaps y deteccion de incompletitud:
-       $ cargar examples/manySequences.fa
-       $ listar_secuencias
-       (las secuencias con '-' deben mostrar "contiene al menos ... bases")
+Generar histograma de una secuencia:
 
-    4. Codificacion Huffman:
-       $ cargar examples/dnaExample.fa
-       $ codificar ejemplo.fabin
-       $ decodificar ejemplo.fabin
-       $ listar_secuencias    (verificar que las bases coinciden tras ciclo codificar/decodificar)
+```
+$ histograma Seq1_Carpodacus_mexicanus
+A : 173
+C : 223
+G : 108
+T : 191
+```
 
-    5. Ruta mas corta en grafo:
-       $ cargar examples/multisizeSequences.fa
-       $ ruta_mas_corta Seq1_Carpodacus_mexicanus 0 0 3 5
+Buscar una subsecuencia:
 
-    6. Base remota:
-       $ base_remota Seq1_Carpodacus_mexicanus 0 0
+```
+$ es_subsecuencia ATG
+La subsecuencia dada se repite 62 veces dentro de las secuencias cargadas en memoria.
+```
 
-    Nota: muchosSequences.fa contiene caracteres no-ADN (aminoacidos, *)
-    que seran rechazados por esBaseValida(). Las secuencias validas en ese
-    archivo son las cabeceras NZ_*, NC_* (ADN/ARN con gaps) y posiblemente
-    la ultima (gi|5524211|gb|AAD44166.1, con X al final).
--->
+Cargar un archivo con gaps para verificar deteccion de incompletitud:
+
+```
+$ cargar examples/manySequences.fa
+  Las secuencias:
+	-LCBO_Bovine
+	-MCHU_Calmodulin
+	-gi|5524211|gb|AAD44166.1
+  No se puedieron guardar porque tienen algun dato invalido como base
+8 secuencias cargadas correctamente desde examples/manySequences.fa.
+$ listar_secuencias
+Hay 8 secuencias cargadas en memoria:
+Secuencia NZ_GG697986.1 contiene al menos 140 bases.
+Secuencia NC_002953.3 contiene al menos 169 bases.
+Secuencia NC_017337.1 contiene al menos 159 bases.
+Secuencia NC_003923.1 contiene al menos 169 bases.
+Secuencia NC_017338.1 contiene al menos 112 bases.
+Secuencia NZ_JH806555.1 contiene al menos 159 bases.
+Secuencia NC_002951.2 contiene al menos 159 bases.
+Secuencia NC_017340.1 contiene al menos 159 bases.
+```
+
+Nota: `manySequences.fa` contiene secuencias de aminoacidos (LCBO_Bovine,
+MCHU_Calmodulin) que son rechazadas por `esBaseValida()`. Las 8 secuencias
+cargadas corresponden a las cabeceras NZ_* y NC_* (ADN/ARN con gaps `-`).
+Todas muestran "contiene al menos N bases" porque `Secuencia::secuenciaCompleta()`
+detecta el caracter `-` en cada una.
 
 ## Autores
 
